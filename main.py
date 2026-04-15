@@ -21,7 +21,7 @@ async def startup_event():
 @app.post("/predict")
 def predict_endpoint(features: IrisFeatures):
     try:
-        pred = predict(features.dict())
+        pred = predict(features.model_dump())
         class_names = ["setosa", "versicolor", "virginica"]
         return {
             "prediction": pred,
