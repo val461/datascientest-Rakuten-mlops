@@ -22,7 +22,7 @@ iris-api/
 ├── src/
 │   ├── __init__.py
 │   ├── data_loader.py     # chargement dataset (CSV ou fallback Iris)
-│   ├── preprocessor.py    # ton preprocessing complexe
+│   ├── preprocessor.py    # preprocessing
 │   ├── trainer.py         # entraînement + sauvegarde du modèle
 │   └── inference.py       # chargement + prédiction (utilisé par l'API)
 ├── main.py                # FastAPI
