@@ -11,10 +11,10 @@ def load_model():
     global model
     if model is None:
         if MODEL_PATH.exists():
-            print(f"Chargement modèle : {MODEL_PATH}")
+            print(f"✅ Chargement modèle : {MODEL_PATH}")
             model = joblib.load(MODEL_PATH)
         else:
-            print("Modèle absent : entraînement automatique")
+            print("⚠️ Modèle absent : entraînement automatique")
             train_and_save_model()
             model = joblib.load(MODEL_PATH)
     return model
