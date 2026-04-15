@@ -22,10 +22,10 @@ async def startup_event():
 def predict_endpoint(features: IrisFeatures):
     try:
         pred = predict(features.model_dump())
-        class_names = ["setosa", "versicolor", "virginica"]
+        # class_names = ["setosa", "versicolor", "virginica"]
         return {
             "prediction": pred,
-            "class_name": class_names[pred]
+            # "class_name": class_names[pred]
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -49,4 +49,4 @@ def train_endpoint(background_tasks: BackgroundTasks):
 
 @app.get("/health")
 def health():
-    return {"status": "healthy", "model_loaded": True}
+    return {"status": "healthy"}
