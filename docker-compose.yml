@@ -7,4 +7,4 @@ services:
       - ./data:/app/data
       - ./models:/app/models
       - .:/app
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload  # override dockerfile CMD with --reload for dev
