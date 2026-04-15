@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from src.inference import predict, load_model
 from src.trainer import train_and_save_model
 
-app = FastAPI(title="Iris Prediction API - Phase 1")
+app = FastAPI(title="Prediction API")
 
 
 class IrisFeatures(BaseModel):
