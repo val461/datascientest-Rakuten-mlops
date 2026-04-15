@@ -1,5 +1,10 @@
 fastapi
 uvicorn[standard]
+beautifulsoup4
 joblib
 pandas
+nltk
+scipy
+spacy
+Unidecode
 scikit-learn

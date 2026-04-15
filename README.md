@@ -33,10 +33,10 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "sepal_length": 1,
-  "sepal_width": 1,
-  "petal_length": 1,
-  "petal_width": 1
+  "designation": "Folkmanis Puppets - Marionnette Et Theatre - Mini Turtle",
+  "description": "Marionnette tortue miniature en tissu",
+  "productid": 516376098,
+  "imageid": 1019294171
 }'
 ```
 
@@ -52,21 +52,29 @@ curl -X 'POST' \
 ## Arborescence
 
 ```
-iris-api/
+datascientest-Rakuten-mlops/
 ├── data/
-│   ├── raw/               # mettre les CSV originaux ici
+│   ├── raw/               # CSV source Rakuten
 │   │   ├── X_train.csv
+│   │   ├── X_test.csv
 │   │   └── Y_train.csv
-│   └── preprocessed/      # artefacts éventuels de preprocessing
-├── models/                # le modèle sauvegardé y sera créé
+│   └── preprocessed/      # artefacts générés par le preprocessing TF-IDF
+│       ├── vectorizer.joblib
+│       ├── X_train_vectors.npz
+│       ├── X_valid_vectors.npz
+│       ├── y_train.csv
+│       ├── y_valid.csv
+│       ├── label_names.json
+│       └── metadata.json
+├── models/                # bundle classifieur + preprocessor sauvegardé
 │   └── model.joblib
 ├── src/
 │   ├── __init__.py
-│   ├── data_loader.py     # chargement dataset (CSV ou fallback Iris)
-│   ├── preprocessor.py    # preprocessing
-│   ├── trainer.py         # entraînement + sauvegarde du modèle
+│   ├── data_loader.py     # chargement des CSV Rakuten
+│   ├── preprocessor.py    # nettoyage texte, stopwords, lemmatisation, TF-IDF mot+caractère
+│   ├── trainer.py         # split stratifié, entraînement LinearSVC, métriques
 │   └── inference.py       # chargement + prédiction (utilisé par l'API)
-├── main.py                # FastAPI
+├── main.py                # FastAPI pour les endpoints /predict, /train et /health
 ├── train.py               # script pour lancer l'entraînement manuellement si besoin
 ├── requirements.txt
 ├── Dockerfile
