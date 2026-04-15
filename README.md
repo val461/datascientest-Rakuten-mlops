@@ -4,6 +4,8 @@
 
 `docker compose up --build`
 
+Normalement, pas besoin de relancer la commande après édition des fichiers python.
+
 ## Endpoints
 
 http://localhost:8000/
