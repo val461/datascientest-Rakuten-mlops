@@ -15,7 +15,7 @@ http://localhost:8000/docs
 - POST /predict → prédiction
 - POST /train → réentraînement
 
-## Tests
+## Tests with curl
 
 ### Health
 
@@ -47,6 +47,27 @@ curl -X 'POST' \
   'http://localhost:8000/train' \
   -H 'accept: application/json' \
   -d ''
+```
+
+## Tests with python
+
+### First time
+
+In a terminal in the folder of this repository, run:
+
+```
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements-dev.txt
+pytest test_api.py -v
+```
+
+### Next times
+
+In a terminal in the folder of this repository, run:
+```
+source venv/bin/activate
+pytest test_api.py -v
 ```
 
 ## Arborescence
