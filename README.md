@@ -8,12 +8,12 @@ Normalement, pas besoin de relancer la commande après édition des fichiers pyt
 
 ## Endpoints
 
-http://localhost:8000/
+http://localhost:8000/docs
 
+- GET /docs → Swagger UI
+- GET /health
 - POST /predict → prédiction
 - POST /train → réentraînement
-- GET /health
-- GET /docs → Swagger UI
 
 ## Tests
 
