@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 from src.trainer import train_and_save_model
 
-MODEL_PATH = Path("models/iris_model.joblib")
+MODEL_PATH = Path("models/model.joblib")
 model = None
 
 
