@@ -25,15 +25,6 @@ curl -X 'GET' \
   -H 'accept: application/json'
 ```
 
-### (Ré-)entraînement
-
-```
-curl -X 'POST' \
-  'http://localhost:8000/train' \
-  -H 'accept: application/json' \
-  -d ''
-```
-
 ### Prédiction
 
 ```
@@ -49,15 +40,26 @@ curl -X 'POST' \
 }'
 ```
 
+### (Ré-)entraînement
+
+```
+curl -X 'POST' \
+  'http://localhost:8000/train' \
+  -H 'accept: application/json' \
+  -d ''
+```
+
 ## Arborescence
 
 ```
 iris-api/
 ├── data/
-│   ├── raw/               # mettre le CSV ici
-│   └── preprocessed/      # optionnel : artefacts de preprocessing
+│   ├── raw/               # mettre les CSV originaux ici
+│   │   ├── X_train.csv
+│   │   └── Y_train.csv
+│   └── preprocessed/      # artefacts éventuels de preprocessing
 ├── models/                # le modèle sauvegardé y sera créé
-│   └── iris_model.joblib
+│   └── model.joblib
 ├── src/
 │   ├── __init__.py
 │   ├── data_loader.py     # chargement dataset (CSV ou fallback Iris)

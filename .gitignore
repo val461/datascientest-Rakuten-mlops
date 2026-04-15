@@ -207,3 +207,4 @@ marimo/_lsp/
 __marimo__/
 
 models/iris_model.joblib
+data/raw/*.csv
