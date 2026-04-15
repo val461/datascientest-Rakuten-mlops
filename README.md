@@ -25,15 +25,6 @@ curl -X 'GET' \
   -H 'accept: application/json'
 ```
 
-### (Ré-)entraînement
-
-```
-curl -X 'POST' \
-  'http://localhost:8000/train' \
-  -H 'accept: application/json' \
-  -d ''
-```
-
 ### Prédiction
 
 ```
@@ -47,6 +38,15 @@ curl -X 'POST' \
   "petal_length": 1,
   "petal_width": 1
 }'
+```
+
+### (Ré-)entraînement
+
+```
+curl -X 'POST' \
+  'http://localhost:8000/train' \
+  -H 'accept: application/json' \
+  -d ''
 ```
 
 ## Arborescence
