@@ -54,10 +54,12 @@ curl -X 'POST' \
 ```
 iris-api/
 ├── data/
-│   ├── raw/               # mettre le CSV ici
-│   └── preprocessed/      # optionnel : artefacts de preprocessing
+│   ├── raw/               # mettre les CSV ici
+│   │   ├── X_train.csv
+│   │   └── Y_train.csv
+│   └── preprocessed/      # artefacts éventuels de preprocessing
 ├── models/                # le modèle sauvegardé y sera créé
-│   └── iris_model.joblib
+│   └── model.joblib
 ├── src/
 │   ├── __init__.py
 │   ├── data_loader.py     # chargement dataset (CSV ou fallback Iris)
