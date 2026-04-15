@@ -54,7 +54,7 @@ curl -X 'POST' \
 ```
 iris-api/
 ├── data/
-│   ├── raw/               # mettre les CSV ici
+│   ├── raw/               # mettre les CSV originaux ici
 │   │   ├── X_train.csv
 │   │   └── Y_train.csv
 │   └── preprocessed/      # artefacts éventuels de preprocessing
