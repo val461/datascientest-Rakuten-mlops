@@ -1,17 +1,16 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel
-
-from src.inference import load_model, predict
+from src.inference import predict, load_model
 from src.trainer import train_and_save_model
 
-app = FastAPI(title="Rakuten Prediction API")
+app = FastAPI(title="Prediction API")
 
 
-class ProductFeatures(BaseModel):
-    designation: str
-    description: str | None = None
-    productid: int | None = None
-    imageid: int | None = None
+class IrisFeatures(BaseModel):
+    sepal_length: float
+    sepal_width: float
+    petal_length: float
+    petal_width: float
 
 
 @app.on_event("startup")
@@ -20,28 +19,34 @@ async def startup_event():
 
 
 @app.post("/predict")
-def predict_endpoint(features: ProductFeatures):
+def predict_endpoint(features: IrisFeatures):
     try:
-        prediction = predict(features.model_dump())
-        return {"prediction": prediction}
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
+        pred = predict(features.model_dump())
+        class_names = ["setosa", "versicolor", "virginica"]
+        return {
+            "prediction": pred,
+            "class_name": class_names[pred]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/train")
-def train_endpoint():
+def train_endpoint(background_tasks: BackgroundTasks):
+    """Endpoint pour réentraîner le modèle"""
     try:
         result = train_and_save_model()
-        load_model(force_reload=True)
+        # Recharger le modèle après entraînement
+        load_model()
         return {
             "status": "success",
-            "message": "Modele reentraine avec succes",
-            **result,
+            "message": "Modèle réentraîné avec succès",
+            **result
         }
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/health")
 def health():
-    return {"status": "healthy", "model_loaded": load_model() is not None}
+    return {"status": "healthy", "model_loaded": True}

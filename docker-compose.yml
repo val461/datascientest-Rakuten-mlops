@@ -1,8 +1,6 @@
 services:
   inference-api:
     build: .
-    environment:
-      SPACY_N_PROCESS: "1"
     ports:
       - "8000:8000"
     volumes:

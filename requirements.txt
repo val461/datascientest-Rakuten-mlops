@@ -1,11 +1,5 @@
 fastapi
 uvicorn[standard]
-beautifulsoup4
 joblib
-mlflow
 pandas
-nltk
-scipy
-spacy
-Unidecode
 scikit-learn
