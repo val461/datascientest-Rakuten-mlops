@@ -29,6 +29,7 @@ CHAR_MIN_DF = 5
 CHAR_MAX_DF = 0.9
 MIN_ITEMS_FOR_MULTIPROCESSING = 1_000
 MAX_SPACY_PROCESSES = 4
+DEFAULT_SPACY_PROCESSES = 1
 
 PREPROCESSED_DIR = Path("data/preprocessed")
 VECTORIZER_PATH = PREPROCESSED_DIR / "vectorizer.joblib"
@@ -126,10 +127,15 @@ def lemmatize_texts(texts: Iterable[str]) -> list[str]:
 
     stopword_set = get_stopword_set()
     nlp = get_spacy_model()
-    if len(texts) < MIN_ITEMS_FOR_MULTIPROCESSING:
+    configured_processes = os.getenv("SPACY_N_PROCESS")
+    if configured_processes is not None:
+        n_process = max(1, int(configured_processes))
+    elif len(texts) < MIN_ITEMS_FOR_MULTIPROCESSING:
         n_process = 1
     else:
-        n_process = max(1, min(MAX_SPACY_PROCESSES, os.cpu_count() or 1))
+        n_process = DEFAULT_SPACY_PROCESSES
+
+    n_process = max(1, min(n_process, MAX_SPACY_PROCESSES, os.cpu_count() or 1))
     lemmatized_texts: list[str] = []
     for doc in nlp.pipe(texts, batch_size=256, n_process=n_process):
         lemmas = [

@@ -49,6 +49,15 @@ curl -X 'POST' \
   -d ''
 ```
 
+Chaque entraînement journalise aussi :
+
+- paramètres du modèle et du preprocessing
+- métriques de validation
+- artefacts du preprocessing
+- modèle sauvegardé
+
+dans un store MLflow local `mlruns/`.
+
 ## Arborescence
 
 ```
@@ -71,12 +80,34 @@ datascientest-Rakuten-mlops/
 ├── src/
 │   ├── __init__.py
 │   ├── data_loader.py     # chargement des CSV Rakuten
+│   ├── mlflow_tracking.py # configuration et logging MLflow
 │   ├── preprocessor.py    # nettoyage texte, stopwords, lemmatisation, TF-IDF mot+caractère
 │   ├── trainer.py         # split stratifié, entraînement LinearSVC, métriques
 │   └── inference.py       # chargement + prédiction (utilisé par l'API)
 ├── main.py                # FastAPI pour les endpoints /predict, /train et /health
 ├── train.py               # script pour lancer l'entraînement manuellement si besoin
+├── mlruns/                # store MLflow local (ignoré par git)
 ├── requirements.txt
 ├── Dockerfile
 └── docker-compose.yml
 ```
+
+## MLflow
+
+Chaque `python3 train.py` et chaque appel `POST /train` créent un run MLflow.
+
+Pour lancer l'interface locale :
+
+```
+mlflow ui --backend-store-uri ./mlruns --port 5001
+```
+
+Puis ouvrir :
+
+- `http://localhost:5001`
+
+Le résultat de l'entraînement renvoie aussi :
+
+- `mlflow_run_id`
+- `tracking_uri`
+- `experiment_name`

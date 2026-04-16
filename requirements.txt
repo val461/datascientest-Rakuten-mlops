@@ -2,6 +2,7 @@ fastapi
 uvicorn[standard]
 beautifulsoup4
 joblib
+mlflow
 pandas
 nltk
 scipy
