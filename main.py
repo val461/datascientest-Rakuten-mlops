@@ -1,52 +1,49 @@
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from src.inference import predict, load_model
+
+from src.inference import ModelNotAvailableError, is_model_available, load_model, predict
 from src.trainer import train_and_save_model
 
-app = FastAPI(title="Prediction API")
+app = FastAPI(title="Rakuten Prediction API")
 
 
-class IrisFeatures(BaseModel):
-    sepal_length: float
-    sepal_width: float
-    petal_length: float
-    petal_width: float
+class ProductFeatures(BaseModel):
+    designation: str
+    description: str | None = None
+    productid: int | None = None
+    imageid: int | None = None
 
 
 @app.on_event("startup")
 async def startup_event():
-    load_model()
+    load_model(require_exists=False)
 
 
 @app.post("/predict")
-def predict_endpoint(features: IrisFeatures):
+def predict_endpoint(features: ProductFeatures):
     try:
-        pred = predict(features.model_dump())
-        class_names = ["setosa", "versicolor", "virginica"]
-        return {
-            "prediction": pred,
-            "class_name": class_names[pred]
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        prediction = predict(features.model_dump())
+        return {"prediction": prediction}
+    except ModelNotAvailableError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
 @app.post("/train")
-def train_endpoint(background_tasks: BackgroundTasks):
-    """Endpoint pour réentraîner le modèle"""
+def train_endpoint():
     try:
         result = train_and_save_model()
-        # Recharger le modèle après entraînement
-        load_model()
+        load_model(force_reload=True)
         return {
             "status": "success",
-            "message": "Modèle réentraîné avec succès",
-            **result
+            "message": "Modele reentraine avec succes",
+            **result,
         }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
 @app.get("/health")
 def health():
-    return {"status": "healthy", "model_loaded": True}
+    return {"status": "healthy", "model_loaded": is_model_available()}
