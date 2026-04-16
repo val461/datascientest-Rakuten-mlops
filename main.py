@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from src.inference import load_model, predict
+from src.inference import ModelNotAvailableError, is_model_available, load_model, predict
 from src.trainer import train_and_save_model
 
 app = FastAPI(title="Rakuten Prediction API")
@@ -16,7 +16,7 @@ class ProductFeatures(BaseModel):
 
 @app.on_event("startup")
 async def startup_event():
-    load_model()
+    load_model(require_exists=False)
 
 
 @app.post("/predict")
@@ -24,6 +24,8 @@ def predict_endpoint(features: ProductFeatures):
     try:
         prediction = predict(features.model_dump())
         return {"prediction": prediction}
+    except ModelNotAvailableError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -44,4 +46,4 @@ def train_endpoint():
 
 @app.get("/health")
 def health():
-    return {"status": "healthy", "model_loaded": load_model() is not None}
+    return {"status": "healthy", "model_loaded": is_model_available()}
