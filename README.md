@@ -33,10 +33,10 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "sepal_length": 1,
-  "sepal_width": 1,
-  "petal_length": 1,
-  "petal_width": 1
+  "designation": "Folkmanis Puppets - Marionnette Et Theatre - Mini Turtle",
+  "description": "Marionnette tortue miniature en tissu",
+  "productid": 516376098,
+  "imageid": 1019294171
 }'
 ```
 
@@ -49,26 +49,65 @@ curl -X 'POST' \
   -d ''
 ```
 
+Chaque entraînement journalise aussi :
+
+- paramètres du modèle et du preprocessing
+- métriques de validation
+- artefacts du preprocessing
+- modèle sauvegardé
+
+dans un store MLflow local `mlruns/`.
+
 ## Arborescence
 
 ```
-iris-api/
+datascientest-Rakuten-mlops/
 ├── data/
-│   ├── raw/               # mettre les CSV originaux ici
+│   ├── raw/               # CSV source Rakuten
 │   │   ├── X_train.csv
+│   │   ├── X_test.csv
 │   │   └── Y_train.csv
-│   └── preprocessed/      # artefacts éventuels de preprocessing
-├── models/                # le modèle sauvegardé y sera créé
+│   └── preprocessed/      # artefacts générés par le preprocessing TF-IDF
+│       ├── vectorizer.joblib
+│       ├── X_train_vectors.npz
+│       ├── X_valid_vectors.npz
+│       ├── y_train.csv
+│       ├── y_valid.csv
+│       ├── label_names.json
+│       └── metadata.json
+├── models/                # bundle classifieur + preprocessor sauvegardé
 │   └── model.joblib
 ├── src/
 │   ├── __init__.py
-│   ├── data_loader.py     # chargement dataset (CSV ou fallback Iris)
-│   ├── preprocessor.py    # preprocessing
-│   ├── trainer.py         # entraînement + sauvegarde du modèle
+│   ├── data_loader.py     # chargement des CSV Rakuten
+│   ├── mlflow_tracking.py # configuration et logging MLflow
+│   ├── preprocessor.py    # nettoyage texte, stopwords, lemmatisation, TF-IDF mot+caractère
+│   ├── trainer.py         # split stratifié, entraînement LinearSVC, métriques
 │   └── inference.py       # chargement + prédiction (utilisé par l'API)
-├── main.py                # FastAPI
+├── main.py                # FastAPI pour les endpoints /predict, /train et /health
 ├── train.py               # script pour lancer l'entraînement manuellement si besoin
+├── mlruns/                # store MLflow local (ignoré par git)
 ├── requirements.txt
 ├── Dockerfile
 └── docker-compose.yml
 ```
+
+## MLflow
+
+Chaque `python3 train.py` et chaque appel `POST /train` créent un run MLflow.
+
+Pour lancer l'interface locale :
+
+```
+mlflow ui --backend-store-uri ./mlruns --port 5001
+```
+
+Puis ouvrir :
+
+- `http://localhost:5001`
+
+Le résultat de l'entraînement renvoie aussi :
+
+- `mlflow_run_id`
+- `tracking_uri`
+- `experiment_name`
