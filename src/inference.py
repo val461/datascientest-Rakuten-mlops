@@ -4,13 +4,20 @@ import joblib
 import pandas as pd
 
 from src.preprocessor import transform_features
-from src.trainer import train_and_save_model
 
 MODEL_PATH = Path("models/model.joblib")
 model_bundle = None
 
 
-def load_model(force_reload: bool = False):
+class ModelNotAvailableError(FileNotFoundError):
+    pass
+
+
+def is_model_available() -> bool:
+    return MODEL_PATH.exists()
+
+
+def load_model(force_reload: bool = False, require_exists: bool = True):
     global model_bundle
 
     if force_reload:
@@ -20,10 +27,10 @@ def load_model(force_reload: bool = False):
         if MODEL_PATH.exists():
             print(f"✅ Chargement modèle : {MODEL_PATH}")
             model_bundle = joblib.load(MODEL_PATH)
-        else:
-            print("⚠️ Modèle absent : entraînement automatique")
-            train_and_save_model()
-            model_bundle = joblib.load(MODEL_PATH)
+        elif require_exists:
+            raise ModelNotAvailableError(
+                "Aucun modèle entraîné n'est disponible. Utilisez l'endpoint /train d'abord."
+            )
     return model_bundle
 
 
