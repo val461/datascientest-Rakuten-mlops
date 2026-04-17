@@ -5,6 +5,7 @@ from src.inference import ModelNotAvailableError, is_model_available, load_model
 from src.trainer import train_and_save_model
 
 import logging
+
 logging.basicConfig(format='%(asctime)s %(levelname)s %(filename)s %(funcName)s - %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
 logger = logging.getLogger(__name__)
 

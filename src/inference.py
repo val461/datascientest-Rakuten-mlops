@@ -5,6 +5,7 @@ import pandas as pd
 
 from src.preprocessor import transform_features
 import logging
+
 logger = logging.getLogger(__name__)
 
 MODEL_PATH = Path("models/model.joblib")
