@@ -1,5 +1,8 @@
 import pytest
 import requests
+import logging
+
+logger = logging.getLogger(__name__)
 
 BASE_URL = "http://localhost:8000"
 
@@ -25,6 +28,8 @@ def test_predict():
 
 
 def test_train():
+    logger.info('May take 10mn.')
     response = requests.post(f"{BASE_URL}/train")
     assert response.status_code == 200
     assert response.json()["status"] == "success"
+
