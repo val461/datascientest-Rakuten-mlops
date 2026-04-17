@@ -40,6 +40,8 @@ curl -X 'POST' \
 
 ### (Ré-)entraînement
 
+L'entraînement peut prendre 10 minutes.
+
 ```
 curl -X 'POST' \
   'http://localhost:8000/train' \
@@ -56,22 +58,25 @@ Chaque entraînement journalise aussi :
 
 dans un store MLflow local `mlruns/`.
 
-## Tests with python
+## Tests with pytest
 
-### First time
+### First time: initialize the virtual environment for API testing
 
-In a terminal in the folder of this repository, run:
+Outside of Docker, in a terminal in the folder of this repository, run the following.
+(This **erases** the virtual environment `venv/` if it exists.)
 
 ```
+rm -Rv venv
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements-dev.txt
-pytest test_api.py -v
 ```
 
 ### Next times
 
-In a terminal in the folder of this repository, run:
+Outside of Docker, in a terminal in the folder of this repository, run the following.
+(The test may take 10 minutes because of training.)
+
 ```
 source venv/bin/activate
 pytest test_api.py -v
@@ -105,8 +110,10 @@ datascientest-Rakuten-mlops/
 │   └── inference.py       # chargement + prédiction (utilisé par l'API)
 ├── main.py                # FastAPI pour les endpoints /predict, /train et /health
 ├── mlruns/                # store MLflow local (ignoré par git)
-├── requirements.txt
-├── Dockerfile
+├── requirements.txt       # dépendances pour container inference-api
+├── requirements-dev.txt   # dépendances pour test API hors de Docker
+├── test_api.py            # test API via pytest hors de Docker
+├── Dockerfile             # pour container inference-api
 └── docker-compose.yml
 ```
 
