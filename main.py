@@ -52,4 +52,4 @@ def train_endpoint():
 
 @app.get("/health")
 def health():
-    return {"status": "healthy", "model_loaded": is_model_available()}
+    return {"status": "healthy", "service": "inference-api", "model_available": is_model_available()}
