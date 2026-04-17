@@ -3,6 +3,7 @@ services:
     build: .
     environment:
       SPACY_N_PROCESS: "1"
+      TZ: Europe/Paris
     ports:
       - "8000:8000"
     volumes:
