@@ -77,10 +77,10 @@ datascientest-Rakuten-mlops/
 │   └── model.joblib
 ├── src/
 │   ├── __init__.py
-│   ├── data_loader.py     # chargement des CSV Rakuten
+│   ├── data_loader.py     # chargement des CSV Rakuten, split stratifié
 │   ├── mlflow_tracking.py # configuration et logging MLflow
 │   ├── preprocessor.py    # nettoyage texte, stopwords, lemmatisation, TF-IDF mot+caractère
-│   ├── trainer.py         # split stratifié, entraînement LinearSVC, métriques
+│   ├── trainer.py         # entraînement LinearSVC, métriques
 │   └── inference.py       # chargement + prédiction (utilisé par l'API)
 ├── main.py                # FastAPI pour les endpoints /predict, /train et /health
 ├── mlruns/                # store MLflow local (ignoré par git)

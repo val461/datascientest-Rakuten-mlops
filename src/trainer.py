@@ -2,10 +2,9 @@ from pathlib import Path
 
 import joblib
 from sklearn.metrics import accuracy_score, classification_report, f1_score
-from sklearn.model_selection import train_test_split
 from sklearn.svm import LinearSVC
 
-from src.data_loader import load_training_data
+from src.data_loader import load_split
 from src.mlflow_tracking import (
     log_artifact_if_exists,
     log_artifacts_if_exists,
@@ -26,6 +25,7 @@ from src.preprocessor import (
     transform_features,
 )
 import logging
+
 logger = logging.getLogger(__name__)
 
 MODEL_PATH = Path("models/model.joblib")
@@ -123,14 +123,7 @@ def log_training_run(
 
 
 def train_and_save_model() -> dict:
-    X, y = load_training_data()
-    X_train, X_valid, y_train, y_valid = train_test_split(
-        X,
-        y,
-        test_size=TEST_SIZE,
-        random_state=RANDOM_STATE,
-        stratify=y,
-    )
+    X_train, X_valid, y_train, y_valid = load_split()
 
     logger.info('Preprocessor fit-transforming X_train. May take 6mn.')
     preprocessor, X_train_vectors = fit_transform_features(X_train)
