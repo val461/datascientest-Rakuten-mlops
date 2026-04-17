@@ -83,7 +83,6 @@ datascientest-Rakuten-mlops/
 │   ├── trainer.py         # split stratifié, entraînement LinearSVC, métriques
 │   └── inference.py       # chargement + prédiction (utilisé par l'API)
 ├── main.py                # FastAPI pour les endpoints /predict, /train et /health
-├── train.py               # script pour lancer l'entraînement manuellement si besoin
 ├── mlruns/                # store MLflow local (ignoré par git)
 ├── requirements.txt
 ├── Dockerfile
@@ -92,7 +91,7 @@ datascientest-Rakuten-mlops/
 
 ## MLflow
 
-Chaque `python3 train.py` et chaque appel `POST /train` créent un run MLflow.
+Chaque appel `POST /train` crée un run MLflow.
 
 Puis ouvrir :
 
