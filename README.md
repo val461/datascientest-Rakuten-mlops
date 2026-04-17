@@ -113,6 +113,7 @@ datascientest-Rakuten-mlops/
 ├── requirements.txt       # dépendances pour container inference-api
 ├── requirements-dev.txt   # dépendances pour test API hors de Docker
 ├── test_api.py            # test API via pytest hors de Docker
+├── clean.sh               # script pour réinitialiser le repo et mlflow (effacer les artefacts)
 ├── Dockerfile             # pour container inference-api
 └── docker-compose.yml
 ```
