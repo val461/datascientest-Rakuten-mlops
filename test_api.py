@@ -8,20 +8,20 @@ def test_health():
     response = requests.get(f"{BASE_URL}/health")
     assert response.status_code == 200
     assert response.json()["status"] == "healthy"
+    assert response.json()["service"] == "inference-api"
 
 
 def test_predict():
     payload = {
-        "sepal_length": 5.1,
-        "sepal_width": 3.5,
-        "petal_length": 1.4,
-        "petal_width": 0.2
+        "designation": "Folkmanis Puppets - Marionnette Et Theatre - Mini Turtle",
+        "description": "Marionnette tortue miniature en tissu",
+        "productid": 516376098,
+        "imageid":1019294171
     }
     response = requests.post(f"{BASE_URL}/predict", json=payload)
     assert response.status_code == 200
     data = response.json()
     assert "prediction" in data
-    # assert data["class_name"] in ["setosa", "versicolor", "virginica"]
 
 
 def test_train():
