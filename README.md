@@ -2,7 +2,7 @@
 
 ## Lancement
 
-`docker compose up --build`
+`docker compose down; docker compose up --build`
 
 Normalement, pas besoin de relancer la commande après édition des fichiers python.
 
@@ -95,12 +95,6 @@ datascientest-Rakuten-mlops/
 ## MLflow
 
 Chaque `python3 train.py` et chaque appel `POST /train` créent un run MLflow.
-
-Pour lancer l'interface locale :
-
-```
-mlflow ui --backend-store-uri ./mlruns --port 5001
-```
 
 Puis ouvrir :
 
