@@ -25,6 +25,8 @@ from src.preprocessor import (
     save_preprocessing_artifacts,
     transform_features,
 )
+import logging
+logger = logging.getLogger(__name__)
 
 MODEL_PATH = Path("models/model.joblib")
 
@@ -38,14 +40,14 @@ def create_model() -> LinearSVC:
 
 
 def train(model: LinearSVC, X_train_vectors, y_train) -> None:
-    print("🚀 Entraînement du classifieur texte...")
+    logger.info("🚀 Entraînement du classifieur texte...")
     model.fit(X_train_vectors, y_train)
 
 
 def save_model(model_bundle: dict, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(model_bundle, path)
-    print(f"✅ Modèle sauvegardé : {path}")
+    logger.info(f"✅ Modèle sauvegardé : {path}")
 
 
 def evaluate(model: LinearSVC, X_valid_vectors, y_valid) -> dict:
@@ -55,9 +57,9 @@ def evaluate(model: LinearSVC, X_valid_vectors, y_valid) -> dict:
     f1_weighted = f1_score(y_valid, predictions, average="weighted")
     report = classification_report(y_valid, predictions, output_dict=False)
 
-    print(f"Accuracy validation : {accuracy:.4f}")
-    print(f"F1 macro validation : {f1_macro:.4f}")
-    print(f"F1 pondéré validation : {f1_weighted:.4f}")
+    logger.info(f"Accuracy validation : {accuracy:.4f}")
+    logger.info(f"F1 macro validation : {f1_macro:.4f}")
+    logger.info(f"F1 pondéré validation : {f1_weighted:.4f}")
 
     return {
         "accuracy": float(accuracy),
@@ -130,12 +132,15 @@ def train_and_save_model() -> dict:
         stratify=y,
     )
 
+    logger.info('Preprocessor fit-transforming X_train. May take 6mn.')
     preprocessor, X_train_vectors = fit_transform_features(X_train)
+    logger.info('Preprocessor transforming X_valid. May take 2mn.')
     X_valid_vectors = transform_features(preprocessor, X_valid)
 
     save_preprocessing_artifacts(preprocessor, X_train_vectors, X_valid_vectors, y_train, y_valid)
 
     model = create_model()
+    logger.info('Training. May take 1mn.')
     train(model, X_train_vectors, y_train)
 
     model_bundle = {
@@ -145,6 +150,7 @@ def train_and_save_model() -> dict:
     }
     save_model(model_bundle, MODEL_PATH)
 
+    logger.info('Evaluating.')
     metrics = evaluate(model, X_valid_vectors, y_valid)
     mlflow_info = log_training_run(
         model=model,
