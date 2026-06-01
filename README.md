@@ -2,9 +2,7 @@
 
 ## Lancement
 
-`docker compose up --build`
-
-Normalement, pas besoin de relancer la commande après édition des fichiers python.
+`docker compose down; docker compose up --build`
 
 ## Endpoints
 
@@ -15,7 +13,7 @@ http://localhost:8000/docs
 - POST /predict → prédiction
 - POST /train → réentraînement
 
-## Tests
+## Tests with curl
 
 ### Health
 
@@ -42,6 +40,8 @@ curl -X 'POST' \
 
 ### (Ré-)entraînement
 
+L'entraînement peut prendre 10 minutes.
+
 ```
 curl -X 'POST' \
   'http://localhost:8000/train' \
@@ -57,6 +57,30 @@ Chaque entraînement journalise aussi :
 - modèle sauvegardé
 
 dans un store MLflow local `mlruns/`.
+
+## Tests with pytest
+
+### First time: initialize the virtual environment for API testing
+
+Outside of Docker, in a terminal in the folder of this repository, run the following.
+(This **erases** the virtual environment `venv/` if it exists.)
+
+```
+rm -Rv venv
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements-dev.txt
+```
+
+### Next times
+
+Outside of Docker, in a terminal in the folder of this repository, run the following.
+(The test may take 10 minutes because of training.)
+
+```
+source venv/bin/activate
+pytest test_api.py -v
+```
 
 ## Arborescence
 
@@ -79,28 +103,24 @@ datascientest-Rakuten-mlops/
 │   └── model.joblib
 ├── src/
 │   ├── __init__.py
-│   ├── data_loader.py     # chargement des CSV Rakuten
+│   ├── data_loader.py     # chargement des CSV Rakuten, split stratifié
 │   ├── mlflow_tracking.py # configuration et logging MLflow
 │   ├── preprocessor.py    # nettoyage texte, stopwords, lemmatisation, TF-IDF mot+caractère
-│   ├── trainer.py         # split stratifié, entraînement LinearSVC, métriques
+│   ├── trainer.py         # entraînement LinearSVC, métriques
 │   └── inference.py       # chargement + prédiction (utilisé par l'API)
 ├── main.py                # FastAPI pour les endpoints /predict, /train et /health
-├── train.py               # script pour lancer l'entraînement manuellement si besoin
 ├── mlruns/                # store MLflow local (ignoré par git)
-├── requirements.txt
-├── Dockerfile
+├── requirements.txt       # dépendances pour container inference-api
+├── requirements-dev.txt   # dépendances pour test API hors de Docker
+├── test_api.py            # test API via pytest hors de Docker
+├── clean.sh               # script pour réinitialiser le repo et mlflow (effacer les artefacts)
+├── Dockerfile             # pour container inference-api
 └── docker-compose.yml
 ```
 
 ## MLflow
 
-Chaque `python3 train.py` et chaque appel `POST /train` créent un run MLflow.
-
-Pour lancer l'interface locale :
-
-```
-mlflow ui --backend-store-uri ./mlruns --port 5001
-```
+Chaque appel `POST /train` crée un run MLflow.
 
 Puis ouvrir :
 

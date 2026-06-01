@@ -1,6 +1,14 @@
 from pathlib import Path
+from sklearn.model_selection import train_test_split
+from src.preprocessor import (
+    RANDOM_STATE,
+    TEST_SIZE,
+)
 
 import pandas as pd
+import logging
+
+logger = logging.getLogger(__name__)
 
 DATA_DIR = Path("data/raw")
 INDEX_COLUMN = "Unnamed: 0"
@@ -15,7 +23,7 @@ def _read_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path, index_col=INDEX_COLUMN)
 
 
-def load_training_data() -> tuple[pd.DataFrame, pd.Series]:
+def load_training_csv() -> tuple[pd.DataFrame, pd.Series]:
     X_train = _read_csv(X_TRAIN_PATH)
     y_train_df = _read_csv(Y_TRAIN_PATH)
 
@@ -24,15 +32,28 @@ def load_training_data() -> tuple[pd.DataFrame, pd.Series]:
 
     y_train = y_train_df["prdtypecode"].astype("int64")
     if not X_train.index.equals(y_train.index):
+        logger.warning("⚠️ reindexing y_train.")
         y_train = y_train.reindex(X_train.index)
         if y_train.isna().any():
             raise ValueError("Les index de X_train.csv et Y_train.csv ne sont pas alignés")
 
-    print(f"✅ Chargement du jeu d'entraînement : {X_train.shape[0]} lignes")
+    logger.info(f"✅ Chargement du jeu d'entraînement : {X_train.shape[0]} lignes")
     return X_train, y_train
 
 
-def load_test_data() -> pd.DataFrame:
+def load_split():
+    X, y = load_training_csv()
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X,
+        y,
+        test_size=TEST_SIZE,
+        random_state=RANDOM_STATE,
+        stratify=y,
+    )
+    return X_train, X_valid, y_train, y_valid
+
+
+def load_test_csv() -> pd.DataFrame:
     X_test = _read_csv(X_TEST_PATH)
-    print(f"✅ Chargement du jeu de test : {X_test.shape[0]} lignes")
+    logger.info(f"✅ Chargement du jeu de test : {X_test.shape[0]} lignes")
     return X_test

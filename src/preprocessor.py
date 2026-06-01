@@ -250,10 +250,11 @@ def save_preprocessing_artifacts(
 ) -> None:
     PREPROCESSED_DIR.mkdir(parents=True, exist_ok=True)
     joblib.dump(preprocessor, VECTORIZER_PATH)
-    save_npz(TRAIN_VECTORS_PATH, X_train_vectors)
-    save_npz(VALID_VECTORS_PATH, X_valid_vectors)
-    y_train.rename("prdtypecode").to_csv(Y_TRAIN_PATH, index=True)
-    y_valid.rename("prdtypecode").to_csv(Y_VALID_PATH, index=True)
+    # # Commented out because heavy on disk
+    # save_npz(TRAIN_VECTORS_PATH, X_train_vectors)
+    # save_npz(VALID_VECTORS_PATH, X_valid_vectors)
+    # y_train.rename("prdtypecode").to_csv(Y_TRAIN_PATH, index=True)
+    # y_valid.rename("prdtypecode").to_csv(Y_VALID_PATH, index=True)
     label_names = sorted(pd.concat([y_train, y_valid]).unique().tolist())
     LABEL_NAMES_PATH.write_text(
         json.dumps(label_names, ensure_ascii=False, indent=2)
