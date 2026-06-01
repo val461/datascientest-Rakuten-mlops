@@ -3,10 +3,11 @@ services:
     build: .
     environment:
       SPACY_N_PROCESS: "1"
+      MLFLOW_ALLOW_FILE_STORE: "true"
     ports:
       - "8000:8000"
     volumes:
       - ./data:/app/data
       - ./models:/app/models
       - .:/app
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload  # override dockerfile CMD with --reload for dev
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
