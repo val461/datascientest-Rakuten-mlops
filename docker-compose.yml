@@ -4,6 +4,7 @@ services:
     environment:
       SPACY_N_PROCESS: "1"
       TZ: Europe/Paris
+      MLFLOW_ALLOW_FILE_STORE: "true"
     ports:
       - "8000:8000"
     volumes:
@@ -18,3 +19,4 @@ services:
       - "5001:5000"
     volumes:
       - ./mlruns:/mlruns
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
