@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Rakuten Prediction API")
 
-API_KEY = os.getenv("API_KEY", "secret")
+API_KEY = os.getenv("API_KEY")
 api_key_header = APIKeyHeader(name="X-API-Key")
 
 
