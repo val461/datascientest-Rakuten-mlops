@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException
+import os
+from fastapi import FastAPI, HTTPException, Depends, Security
+from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel
 
 from src.inference import ModelNotAvailableError, is_model_available, load_model, predict
@@ -10,6 +12,14 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(filename)s %(funcName)s 
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Rakuten Prediction API")
+
+API_KEY = os.getenv("API_KEY", "secret")
+api_key_header = APIKeyHeader(name="X-API-Key")
+
+
+def verify_api_key(key: str = Security(api_key_header)):
+    if key != API_KEY:
+        raise HTTPException(status_code=403, detail="Clé API invalide")
 
 
 class ProductFeatures(BaseModel):
@@ -25,7 +35,7 @@ async def startup_event():
     load_model(require_exists=False)
 
 
-@app.post("/predict")
+@app.post("/predict", dependencies=[Depends(verify_api_key)])
 def predict_endpoint(features: ProductFeatures):
     try:
         prediction = predict(features.model_dump())
@@ -36,7 +46,7 @@ def predict_endpoint(features: ProductFeatures):
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
-@app.post("/train")
+@app.post("/train", dependencies=[Depends(verify_api_key)])
 def train_endpoint():
     try:
         result = train_and_save_model()
