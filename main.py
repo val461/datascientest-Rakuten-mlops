@@ -59,6 +59,7 @@ def train_endpoint():
         training_ongoing = True
         try:
             result = train_and_save_model()
+            training_ongoing = False
             load_model(force_reload=True)
             return {
                 "status": "success",
@@ -66,9 +67,9 @@ def train_endpoint():
                 **result,
             }
         except Exception as exc:
-            raise HTTPException(status_code=500, detail=str(exc)) from exc
-        finally:
             training_ongoing = False
+            logger.error(exc)
+            raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
 @app.get("/health")
