@@ -15,6 +15,7 @@ app = FastAPI(title="Rakuten Prediction API")
 
 API_KEY = os.getenv("API_KEY")
 api_key_header = APIKeyHeader(name="X-API-Key")
+training_ongoing = False
 
 
 def verify_api_key(key: str = Security(api_key_header)):
@@ -48,18 +49,28 @@ def predict_endpoint(features: ProductFeatures):
 
 @app.post("/train", dependencies=[Depends(verify_api_key)])
 def train_endpoint():
-    try:
-        result = train_and_save_model()
-        load_model(force_reload=True)
-        return {
-            "status": "success",
-            "message": "Modele reentraine avec succes",
-            **result,
-        }
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    global training_ongoing
+    if training_ongoing:
+        raise HTTPException(
+            status_code=409,
+            detail="Un entraînement est déjà en cours",
+        )
+    else:
+        training_ongoing = True
+        try:
+            result = train_and_save_model()
+            load_model(force_reload=True)
+            return {
+                "status": "success",
+                "message": "Modele reentraine avec succes",
+                **result,
+            }
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=str(exc)) from exc
+        finally:
+            training_ongoing = False
 
 
 @app.get("/health")
 def health():
-    return {"status": "healthy", "service": "inference-api", "model_available": is_model_available()}
+    return {"status": "healthy", "service": "inference-api", "model_available": is_model_available(), "training_ongoing": training_ongoing}
