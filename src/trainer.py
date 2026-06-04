@@ -149,7 +149,7 @@ def train_and_save_model() -> dict:
         model=model,
         train_rows=int(X_train.shape[0]),
         validation_rows=int(X_valid.shape[0]),
-        num_classes=int(y.nunique()),
+        num_classes=int(y_valid.nunique()),
         metrics=metrics,
     )
 
@@ -158,6 +158,6 @@ def train_and_save_model() -> dict:
         "model_path": str(MODEL_PATH),
         "train_rows": int(X_train.shape[0]),
         "validation_rows": int(X_valid.shape[0]),
-        "num_classes": int(y.nunique()),
+        "num_classes": int(y_valid.nunique()),
         **mlflow_info,
     }
