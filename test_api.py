@@ -54,6 +54,22 @@ def test_predict(correct_payload):
     data = response.json()
     assert "prediction" in data
 
+    # try missing payload
+    response = requests.post(f"{BASE_URL}/predict", headers={"X-API-Key": API_KEY})
+    assert response.status_code == 422
+
+    # try wrong payload (type int instead of str; missing fields)
+    wrong_payload = {"designation": 22}
+    response = requests.post(f"{BASE_URL}/predict", headers={"X-API-Key": API_KEY}, json=wrong_payload)
+    assert response.status_code == 422
+
+    # try wrong payload (empty value; missing fields)
+    wrong_payload = {"designation": ""}
+    response = requests.post(f"{BASE_URL}/predict", headers={"X-API-Key": API_KEY}, json=wrong_payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "prediction" in data
+
 
 def test_train():
     logger.info('May take 10mn.')
