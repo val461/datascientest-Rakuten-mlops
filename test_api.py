@@ -74,12 +74,13 @@ def test_predict(correct_payload):
     assert "prediction" in data
 
 
-def test_train():
-    logger.info('May take 10mn.')
-    response = httpx.post(f"{BASE_URL}/train", headers={"X-API-Key": API_KEY}, timeout=None)
-    logger.debug(f"{response.text=}")
-    assert response.status_code == 200
-    assert response.json()["status"] == "success"
+# Commented because training is slow and also tested by `test_async_train` below
+# def test_train():
+#     logger.info('May take 10mn.')
+#     response = httpx.post(f"{BASE_URL}/train", headers={"X-API-Key": API_KEY}, timeout=None)
+#     logger.debug(f"{response.text=}")
+#     assert response.status_code == 200
+#     assert response.json()["status"] == "success"
 
 
 @pytest.mark.asyncio  # tag for compatibility with module pytest-asyncio
