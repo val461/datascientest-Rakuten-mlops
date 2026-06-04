@@ -23,7 +23,7 @@ def _read_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path, index_col=INDEX_COLUMN)
 
 
-def load_training_csv() -> tuple[pd.DataFrame, pd.Series]:
+def load_training_csv(debug=False) -> tuple[pd.DataFrame, pd.Series]:
     X_train = _read_csv(X_TRAIN_PATH)
     y_train_df = _read_csv(Y_TRAIN_PATH)
 
@@ -36,6 +36,11 @@ def load_training_csv() -> tuple[pd.DataFrame, pd.Series]:
         y_train = y_train.reindex(X_train.index)
         if y_train.isna().any():
             raise ValueError("Les index de X_train.csv et Y_train.csv ne sont pas alignés")
+
+    if debug:
+        # for quicker testing
+        X_train = X_train.iloc[:1000]
+        y_train = y_train.iloc[:1000]
 
     logger.info(f"✅ Chargement du jeu d'entraînement : {X_train.shape[0]} lignes")
     return X_train, y_train
