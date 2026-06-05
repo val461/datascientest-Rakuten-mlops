@@ -1,12 +1,20 @@
 # datascientest-Rakuten-mlops
 
+## Installation
+
+Installer Docker.
+
+Copier le fichier `.env.example` en un fichier `.env` à la racine du repo, et remplacer la valeur de `API_KEY` par une valeur de votre choix.
+
 ## Lancement
+
+(Pas d'environnement virtuel à activer.)
 
 `docker compose down; docker compose up --build`
 
 ## Endpoints
 
-http://localhost:8000/docs
+Voir http://localhost:8000/docs .
 
 - GET /docs → Swagger UI
 - GET /health
@@ -14,6 +22,8 @@ http://localhost:8000/docs
 - POST /train → réentraînement
 
 ## Tests with curl
+
+(Les tests via pytest sont plus pratiques, voir section [Tests with pytest](#tests-with-pytest) plus bas.)
 
 ### Health
 
@@ -25,11 +35,14 @@ curl -X 'GET' \
 
 ### Prédiction
 
+Remplacez `your_api_key` dans la commande par la clé définie dans votre `.env` (voir section [Installation](#installation) plus haut).
+
 ```
 curl -X 'POST' \
   'http://localhost:8000/predict' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
+  -H 'X-API-Key: your_api_key' \
   -d '{
   "designation": "Folkmanis Puppets - Marionnette Et Theatre - Mini Turtle",
   "description": "Marionnette tortue miniature en tissu",
@@ -42,10 +55,13 @@ curl -X 'POST' \
 
 L'entraînement peut prendre 10 minutes.
 
+Remplacez `your_api_key` dans la commande par la clé définie dans votre `.env` (voir section [Installation](#installation) plus haut).
+
 ```
 curl -X 'POST' \
   'http://localhost:8000/train' \
   -H 'accept: application/json' \
+  -H 'X-API-Key: your_api_key' \
   -d ''
 ```
 
@@ -114,6 +130,8 @@ datascientest-Rakuten-mlops/
 ├── requirements-dev.txt   # dépendances pour test API hors de Docker
 ├── test_api.py            # test API via pytest hors de Docker
 ├── clean.sh               # script pour réinitialiser le repo et mlflow (effacer les artefacts)
+├── .env.example           # template pour le fichier .env
+├── .env                   # à créer pour définir la clé API
 ├── Dockerfile             # pour container inference-api
 └── docker-compose.yml
 ```

@@ -4,6 +4,8 @@ services:
     environment:
       SPACY_N_PROCESS: "1"
       TZ: Europe/Paris
+    env_file:
+      - .env  # for API_KEY
     ports:
       - "8000:8000"
     volumes:
