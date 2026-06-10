@@ -20,6 +20,13 @@ def is_model_available() -> bool:
     return MODEL_PATH.exists()
 
 
+def get_model_metadata() -> dict | None:
+    bundle = load_model(require_exists=False)
+    if bundle is None:
+        return None
+    return bundle.get("metadata", {})
+
+
 def load_model(force_reload: bool = False, require_exists: bool = True):
     global model_bundle
 

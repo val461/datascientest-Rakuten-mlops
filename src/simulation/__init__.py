@@ -1,0 +1,1 @@
+"""Data-growth simulation helpers."""

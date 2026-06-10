@@ -21,6 +21,77 @@ Voir http://localhost:8000/docs .
 - POST /predict → prédiction
 - POST /train → réentraînement
 
+## Simulation de croissance des donnees
+
+Le dataset est separe de maniere persistante en :
+
+- 20 % de validation fixe ;
+- 80 % de flux simulant l'arrivee des donnees.
+
+Le premier modele utilise 50 % du flux. Chaque etape ajoute ensuite 5 % :
+
+```text
+step 0  -> 50 % du flux
+step 1  -> 55 % du flux
+...
+step 10 -> 100 % du flux
+```
+
+Les index sont crees une seule fois dans `data/splits/`. Une empreinte SHA-256
+empeche de reutiliser silencieusement le split si les CSV bruts changent.
+
+Initialiser ou verifier le split sans entrainer :
+
+```bash
+docker compose run --rm inference-api python -m scripts.initialize_split
+```
+
+Entrainer une etape directement sans remplacer le modele servi :
+
+```bash
+docker compose run --rm inference-api python -m scripts.train_simulation_step 0
+```
+
+Ajouter `--deploy` uniquement pour promouvoir explicitement cette etape :
+
+```bash
+docker compose run --rm inference-api python -m scripts.train_simulation_step 0 --deploy
+```
+
+Lancer toute la campagne, avec deploiement du step 10 uniquement :
+
+```bash
+docker compose run --rm inference-api python -m scripts.run_simulation_campaign
+```
+
+Conserver l'ancien entrainement classique :
+
+```bash
+docker compose run --rm inference-api python -m scripts.train_full
+```
+
+Via l'API :
+
+```text
+POST /train
+    Entrainement classique complet et deploiement.
+
+POST /train/simulation
+    Lance les steps 0 a 10 en arriere-plan.
+
+GET /train/simulation/status
+    Affiche l'avancement et les resultats disponibles.
+
+POST /train/simulation/{step}
+    Reproduit un step sans deploiement par defaut.
+
+POST /train/simulation/{step}?deploy=true
+    Reproduit et deploie explicitement un step.
+```
+
+L'endpoint authentifie `GET /data-status` expose le split et l'etape du
+modele actuellement servi.
+
 ## Tests with curl
 
 (Les tests via pytest sont plus pratiques, voir section [Tests with pytest](#tests-with-pytest) plus bas.)
@@ -75,6 +146,23 @@ Chaque entraînement journalise aussi :
 dans un store MLflow local `mlruns/`.
 
 ## Tests with pytest
+
+### Tests rapides dans Docker
+
+Les tests unitaires et les tests d'integration courts se lancent avec :
+
+```bash
+docker compose run --rm tests pytest \
+  test_data_loader.py \
+  test_trainer.py \
+  test_api_contract.py \
+  test_api.py \
+  -v -k "not async_train"
+```
+
+Le test `test_async_train` est exclu de cette commande car il declenche un
+veritable entrainement complet. Il doit etre lance volontairement lorsque le
+temps d'execution et le remplacement du modele servi sont acceptes.
 
 ### First time: initialize the virtual environment for API testing
 

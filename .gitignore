@@ -209,5 +209,9 @@ __marimo__/
 
 mlruns/
 models/model.joblib
+models/history/*
+!models/history/.gitkeep
 data/preprocessed/*
 data/raw/*.csv
+data/splits/*
+!data/splits/.gitkeep
