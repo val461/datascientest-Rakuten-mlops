@@ -90,8 +90,9 @@ pip install -r requirements-dev.txt
 
 ### Next times
 
-Outside of Docker, in a terminal in the folder of this repository, run the following.
-(The test may take 10 minutes because of training.)
+Outside of Docker, in a terminal in the folder of this repository, run the following after the section [Lancement](#lancement).
+
+(The tests may take 10 minutes because of training.)
 
 ```
 source venv/bin/activate
@@ -142,7 +143,7 @@ Chaque appel `POST /train` crée un run MLflow.
 
 Puis ouvrir :
 
-- `http://localhost:5001`
+- http://localhost:5001
 
 Le résultat de l'entraînement renvoie aussi :
 
