@@ -20,3 +20,9 @@ services:
       - "5001:5000"
     volumes:
       - ./mlruns:/mlruns
+  prometheus:
+    image: prom/prometheus:v3
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
