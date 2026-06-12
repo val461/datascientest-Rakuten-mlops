@@ -107,3 +107,8 @@ async def test_async_train():
     assert response1.status_code == 200
     assert response1.json()["status"] == "success"
     assert response2.status_code == 409
+
+
+def test_metrics_for_prometheus():
+    response = httpx.get(f"{BASE_URL}/metrics")
+    assert response.status_code == 200

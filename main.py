@@ -16,6 +16,7 @@ from fastapi import (
 )
 from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from src.inference import (
     ModelNotAvailableError,
@@ -44,6 +45,7 @@ app = FastAPI(
         "data-growth simulation."
     ),
 )
+Instrumentator().instrument(app).expose(app)
 
 API_KEY = os.getenv("API_KEY")
 api_key_header = APIKeyHeader(name="X-API-Key")

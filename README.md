@@ -18,8 +18,13 @@ Voir http://localhost:8000/docs .
 
 - GET /docs → Swagger UI
 - GET /health
+- GET /data-status
+- POST /train/simulation
+- GET /train/simulation/status
+- POST /train/simulation/{step}
 - POST /predict → prédiction
 - POST /train → réentraînement
+- GET /metrics → pour prometheus
 
 ## Simulation de croissance des donnees
 
@@ -178,8 +183,9 @@ pip install -r requirements-dev.txt
 
 ### Next times
 
-Outside of Docker, in a terminal in the folder of this repository, run the following.
-(The test may take 10 minutes because of training.)
+Outside of Docker, in a terminal in the folder of this repository, run the following after the section [Lancement](#lancement).
+
+(The tests may take 10 minutes because of training.)
 
 ```
 source venv/bin/activate
@@ -230,10 +236,18 @@ Chaque appel `POST /train` crée un run MLflow.
 
 Puis ouvrir :
 
-- `http://localhost:5001`
+- http://localhost:5001
 
 Le résultat de l'entraînement renvoie aussi :
 
 - `mlflow_run_id`
 - `tracking_uri`
 - `experiment_name`
+
+## Prometheus
+
+Prometheus charge les métriques de l'endpoint http://localhost:8000/metrics ,
+
+et est accessible à la page http://localhost:9090/ .
+
+Pour une explication des métriques exposées, ou pour ajouter des métriques, voir l'intro du readme du repo [prometheus-fastapi-instrumentator](https://github.com/trallnag/prometheus-fastapi-instrumentator).
