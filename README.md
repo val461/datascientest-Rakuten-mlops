@@ -154,7 +154,7 @@ dans un store MLflow local `mlruns/`.
 
 ### Tests rapides dans Docker
 
-Les tests unitaires et les tests d'integration courts se lancent avec :
+Après la section [Lancement](#lancement), les tests unitaires et les tests d'intégration courts se lancent avec :
 
 ```bash
 docker compose run --rm tests pytest \
@@ -168,29 +168,6 @@ docker compose run --rm tests pytest \
 Le test `test_async_train` est exclu de cette commande car il declenche un
 veritable entrainement complet. Il doit etre lance volontairement lorsque le
 temps d'execution et le remplacement du modele servi sont acceptes.
-
-### First time: initialize the virtual environment for API testing
-
-Outside of Docker, in a terminal in the folder of this repository, run the following.
-(This **erases** the virtual environment `venv/` if it exists.)
-
-```
-rm -Rv venv
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements-dev.txt
-```
-
-### Next times
-
-Outside of Docker, in a terminal in the folder of this repository, run the following after the section [Lancement](#lancement).
-
-(The tests may take 10 minutes because of training.)
-
-```
-source venv/bin/activate
-pytest test_api.py -v
-```
 
 ## Arborescence
 
