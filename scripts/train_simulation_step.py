@@ -1,8 +1,14 @@
+import os
+
+os.environ["MLFLOW_TRACKING_URI"] = "http://mlflow:5000"
+
+
 import argparse
 import json
 
 from src.simulation.data_growth import MAX_SIMULATION_STEP
 from src.trainer import train_and_save_simulation_model
+
 
 
 def parse_args() -> argparse.Namespace:

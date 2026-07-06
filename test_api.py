@@ -6,6 +6,10 @@ import httpx
 import logging
 import os
 import asyncio
+import pathlib
+
+basedir = pathlib.Path(__file__).parent.resolve()
+load_dotenv(dotenv_path=basedir / ".env")
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
