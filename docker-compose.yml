@@ -1,3 +1,6 @@
+volumes:
+  grafana-storage: {}  # "caché", interne à Docker
+
 services:
   inference-api:
     build:
@@ -37,9 +40,20 @@ services:
       - "5001:5000"
     volumes:
       - ./mlruns:/mlruns
+
   prometheus:
     image: prom/prometheus:v3
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
+
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
