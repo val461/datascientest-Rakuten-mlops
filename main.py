@@ -173,6 +173,8 @@ def root():
         "documentation": "/docs",
         "health": "/health",
         "mlflow": "http://localhost:5001",
+        "prometheus": "http://localhost:9090",
+        "grafana": "http://localhost:3000",
     }
 
 
