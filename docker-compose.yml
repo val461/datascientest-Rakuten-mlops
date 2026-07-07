@@ -18,6 +18,12 @@ services:
       - ./data:/app/data
       - ./models:/app/models
       - .:/app
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').getcode()"]
+      interval: 10s
+      timeout: 5s
+      retries: 60
+      start_period: 5s
 
   tests:
     build:
@@ -33,10 +39,13 @@ services:
       - ./data:/app/data
       - ./models:/app/models
       - .:/app
+    depends_on:
+      inference-api:
+        condition: service_healthy
 
   mlflow:
     image: ghcr.io/mlflow/mlflow:v3.11.1
-    command: mlflow ui --backend-store-uri /mlruns --host 0.0.0.0 --port 5000
+    command: mlflow server --backend-store-uri /mlruns --host 0.0.0.0 --port 5000 --allowed-hosts "*"
     ports:
       - "5001:5000"
     volumes:
