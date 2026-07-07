@@ -4,13 +4,22 @@
 
 Installer Docker.
 
-Copier le fichier `.env.example` en un fichier `.env` à la racine du repo, et remplacer la valeur de `API_KEY` par une valeur de votre choix.
+Copier le fichier `.env.example` en un fichier `.env` à la racine du repo, et remplacer dans le fichier `.env` la valeur de `API_KEY` par une valeur de votre choix.
 
-## Lancement
+## Lancement / redémarrage
 
 (Pas d'environnement virtuel à activer.)
 
 `docker compose down; docker compose up --build`
+Le démarrage peut durer environ 2 minutes.
+
+### Noter le mot de passe airflow
+
+Après le premier lancement, après quelques minutes, la commande `docker logs rakuten-airflow | grep password` permet d'obtenir le mot de passe du compte airflow `admin` pour se connecter à l'[UI airflow](http://localhost:8080). Conservez le mot de passe précieusement.
+
+## Arrêt
+
+`docker compose down`
 
 ## Endpoints
 
@@ -253,3 +262,24 @@ Pour partager un dashboard via Grafana et git :
 - mettre le JSON dans `grafana/provisioning/dashboards`
 - commit et push le JSON
 - pull request.
+
+
+## Airflow
+
+**Simulation d'arrivée progressive des données (data-growth)**
+
+Ce projet inclut une simulation d'entraînement en flux continu, orchestrée par le DAG Airflow simulation_stream_dag. L'idée est de reproduire l'arrivée progressive de nouvelles données dans le temps : plutôt que d'entraîner le modèle une seule fois sur 100% du dataset, on découpe les données d'entraînement en deux blocs fixes — un bloc de validation (stratifié, ~TEST_SIZE% du dataset) et un "flux" (stream) mélangé aléatoirement représentant l'ordre simulé d'arrivée des données. Ce split est calculé une seule fois (split_manager.py), persisté dans data/splits/ avec une empreinte SHA-256 du dataset source, puis systématiquement revalidé à chaque run pour garantir sa cohérence dans le temps. La simulation se déroule ensuite en 11 paliers (step de 0 à 10) : le step 0 rend disponibles 50% du flux, chaque step suivant ajoute 5% de plus (55%, 60%, 65%...), jusqu'au step 10 qui débloque 100% du flux. À chaque exécution du DAG, une seule étape est franchie : l'API inference-api entraîne un modèle sur le sous-ensemble de données disponible à ce step, évalue ses performances (accuracy, F1 macro, F1 pondéré) sur le bloc de validation fixe, sauvegarde le modèle dans models/history/model_step_XX.joblib, et logge l'ensemble (paramètres, métriques, rapport de classification, artefacts) dans MLflow sous un run nommé LinearSVC-step-XX-ratio-YY. Le step courant est persisté entre deux exécutions via une Airflow Variable (simulation_current_step), de sorte que le DAG reprend automatiquement où il s'était arrêté. Le modèle servi en production par l'endpoint /predict n'est mis à jour que lorsque le step maximum (10, soit 100% du flux) est atteint.
+
+**Retrouver le mot de passe airflow**
+
+Si vous avez perdu le mot de passe airflow :
+- lancer la commande suivante pour réinitialiser airflow : `docker compose down; docker volume rm rakuten-mlops_airflow_home; docker compose up --build`,
+- appliquer la section [Noter le mot de passe airflow](#noter-le-mot-de-passe-airflow) pour obtenir le mot de passe.
+
+**Pour utiliser airflow**
+
+1. Si 2 minutes après le lancement, l'UI airflow (http://localhost:8080) n'est toujours pas joignable, redémarrez les services avec `docker compose down; docker compose up --build` puis attendez 2 minutes.
+2. Activer le DAG simulation_stream_dag dans l'UI Airflow (http://localhost:8080) puis le déclencher manuellement (bouton Trigger DAG) autant de fois que nécessaire pour parcourir les 11 étapes — ou le laisser tourner selon son schedule
+3. Suivre les métriques et artefacts de chaque étape dans MLflow (http://localhost:5001)
+
+Note : l'état paused / unpaused du DAG est sauvegardé lorsqu'on arrête les services avec `docker compose down` et est récupéré lors du prochain lancement des services.

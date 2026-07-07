@@ -1,3 +1,8 @@
+import os
+
+os.environ["MLFLOW_TRACKING_URI"] = "http://mlflow:5000"
+
+
 import argparse
 import json
 

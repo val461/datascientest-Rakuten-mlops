@@ -161,7 +161,7 @@ def load_or_create_simulation_split(
     }
     for key, expected_value in expected_counts.items():
         if metadata.get(key) != expected_value:
-            raise ValueError(f"Metadonnee de split incoherente : {key}")
+            raise ValueError(f"Metadonnee de split incoherente : {key}. Suggestion : supprimer `data/splits/*`.")
 
     _validate_partition(X.index, validation_indices, stream_indices)
     return validation_indices, stream_indices, metadata

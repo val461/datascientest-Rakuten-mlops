@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -21,7 +22,7 @@ def _read_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path, index_col=INDEX_COLUMN)
 
 
-def load_training_csv(debug: bool = False) -> tuple[pd.DataFrame, pd.Series]:
+def load_training_csv() -> tuple[pd.DataFrame, pd.Series]:
     X_train = _read_csv(X_TRAIN_PATH)
     y_train_df = _read_csv(Y_TRAIN_PATH)
 
@@ -39,7 +40,7 @@ def load_training_csv(debug: bool = False) -> tuple[pd.DataFrame, pd.Series]:
                 "Les index de X_train.csv et Y_train.csv ne sont pas alignes"
             )
 
-    if debug:
+    if os.getenv("SMALL_DATASET_FOR_DEBUGGING","false")=="true":
         X_train = X_train.iloc[:1000]
         y_train = y_train.iloc[:1000]
 
