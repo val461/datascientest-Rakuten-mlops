@@ -24,7 +24,7 @@ Hypothèses à adapter à votre infra :
 from __future__ import annotations
 
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from airflow.decorators import dag, task
 from airflow.exceptions import AirflowSkipException
@@ -41,11 +41,12 @@ logger = logging.getLogger(__name__)
 @dag(
     dag_id="simulation_stream_dag",
     description="Avance pas à pas la simulation de flux de données d'entraînement",
-    schedule="@yearly",  # à ajuster : @hourly, cron custom, etc.
+    schedule=timedelta(minutes=5),  # à ajuster : @yearly, @daily, @hourly, timedelta(minutes=5), cron custom, etc.
     start_date=datetime(2026, 1, 1),
     catchup=False,
     max_active_runs=1,  # évite deux avancées de step en parallèle
     tags=["training", "simulation"],
+    is_paused_upon_creation=True,
 )
 def simulation_stream_dag():
     @task
