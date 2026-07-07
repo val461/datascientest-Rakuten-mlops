@@ -278,7 +278,8 @@ Si vous avez perdu le mot de passe airflow :
 
 **Pour utiliser airflow**
 
-1. Activer le DAG simulation_stream_dag dans l'UI Airflow (http://localhost:8080) puis le déclencher manuellement (bouton Trigger DAG) autant de fois que nécessaire pour parcourir les 11 étapes — ou le laisser tourner selon son schedule
-2. Suivre les métriques et artefacts de chaque étape dans MLflow (http://localhost:5001)
+1. Si 2 minutes après le lancement, l'UI airflow (http://localhost:8080) n'est toujours pas joignable, redémarrez les services avec `docker compose down; docker compose up --build` puis attendez 2 minutes.
+2. Activer le DAG simulation_stream_dag dans l'UI Airflow (http://localhost:8080) puis le déclencher manuellement (bouton Trigger DAG) autant de fois que nécessaire pour parcourir les 11 étapes — ou le laisser tourner selon son schedule
+3. Suivre les métriques et artefacts de chaque étape dans MLflow (http://localhost:5001)
 
 Note : l'état paused / unpaused du DAG est sauvegardé lorsqu'on arrête les services avec `docker compose down` et est récupéré lors du prochain lancement des services.
