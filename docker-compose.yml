@@ -76,7 +76,11 @@ services:
       AIRFLOW__CORE__EXECUTOR: SequentialExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
       AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
-      AIRFLOW_CONN_TRAINING_API: "http://:@inference-api:8000?extra__http__headers=%7B%22X-API-Key%22%3A+%22${API_KEY}%22%7D"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+      AIRFLOW_CONN_TRAINING_API: '{"conn_type": "http", "host": "inference-api", "port": 8000}'
+      AIRFLOW_INTERVAL_MINUTES: "15"  # "1" is ok if you set `debug=True` in `load_training_csv` in `src/data_loader.py` to use a small dataset
+    env_file:
+      - .env
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - airflow_home:/opt/airflow

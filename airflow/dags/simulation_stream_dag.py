@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timedelta
+import os
 
 from airflow.decorators import dag, task
 from airflow.exceptions import AirflowSkipException
@@ -38,15 +39,21 @@ HTTP_CONN_ID = "training_api"
 logger = logging.getLogger(__name__)
 
 
+# Load environment variable
+try:
+    schedule_minutes = int(os.environ["AIRFLOW_INTERVAL_MINUTES"])
+except (KeyError, ValueError):
+    schedule_minutes = 13
+
+
 @dag(
     dag_id="simulation_stream_dag",
     description="Avance pas à pas la simulation de flux de données d'entraînement",
-    schedule=timedelta(minutes=5),  # à ajuster : @yearly, @daily, @hourly, timedelta(minutes=5), cron custom, etc.
+    schedule=timedelta(minutes=schedule_minutes),  # à ajuster : @yearly, @daily, @hourly, timedelta(minutes=5), cron custom, etc.
     start_date=datetime(2026, 1, 1),
     catchup=False,
     max_active_runs=1,  # évite deux avancées de step en parallèle
     tags=["training", "simulation"],
-    is_paused_upon_creation=True,
 )
 def simulation_stream_dag():
     @task
@@ -76,7 +83,10 @@ def simulation_stream_dag():
             )
 
         hook = HttpHook(method="POST", http_conn_id=HTTP_CONN_ID)
-        response = hook.run(endpoint=f"train/simulation/{step}")
+        response = hook.run(endpoint=f"train/simulation/{step}",
+                            headers={
+                                "X-API-Key": os.environ["API_KEY"]
+                            })
         response.raise_for_status()
         logger.info(
             "Simulation avancée au step %s. Réponse API : %s",
