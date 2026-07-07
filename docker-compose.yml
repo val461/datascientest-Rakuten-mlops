@@ -10,6 +10,7 @@ services:
     environment:
       SPACY_N_PROCESS: "1"
       TZ: Europe/Paris
+      SMALL_DATASET_FOR_DEBUGGING: "false"
     env_file:
       - .env
     ports:

@@ -4,7 +4,7 @@
 
 Installer Docker.
 
-Copier le fichier `.env.example` en un fichier `.env` à la racine du repo, et remplacer la valeur de `API_KEY` par une valeur de votre choix.
+Copier le fichier `.env.example` en un fichier `.env` à la racine du repo, et remplacer dans le fichier `.env` la valeur de `API_KEY` par une valeur de votre choix.
 
 ## Lancement / redémarrage
 
