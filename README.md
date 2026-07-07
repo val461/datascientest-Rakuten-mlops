@@ -264,6 +264,5 @@ Ce projet inclut une simulation d'entraînement en flux continu, orchestrée par
 **Pour l'utiliser**
 
 1. Lancer les services : docker compose up -d inference-api mlflow airflow
-2. Créer la connexion Airflow training_api (type HTTP, host inference-api, port 8000, avec le header X-API-Key dans le champ Extra)
-3. Activer le DAG simulation_stream_dag dans l'UI Airflow (http://localhost:8080) puis le déclencher manuellement (bouton Trigger DAG) autant de fois que nécessaire pour parcourir les 11 étapes — ou le laisser tourner selon son schedule
-4. Suivre les métriques et artefacts de chaque étape dans MLflow (http://localhost:5001)
+2. Activer le DAG simulation_stream_dag dans l'UI Airflow (http://localhost:8080) puis le déclencher manuellement (bouton Trigger DAG) autant de fois que nécessaire pour parcourir les 11 étapes — ou le laisser tourner selon son schedule
+3. Suivre les métriques et artefacts de chaque étape dans MLflow (http://localhost:5001)

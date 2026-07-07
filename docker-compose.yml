@@ -67,6 +67,7 @@ services:
       AIRFLOW__CORE__EXECUTOR: SequentialExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
       AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+      AIRFLOW_CONN_TRAINING_API: "http://:@inference-api:8000?extra__http__headers=%7B%22X-API-Key%22%3A+%22${API_KEY}%22%7D"
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - airflow_home:/opt/airflow
