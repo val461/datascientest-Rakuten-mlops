@@ -16,6 +16,7 @@ Copier le fichier `.env.example` en un fichier `.env` à la racine du repo, et r
 
 Voir http://localhost:8000/docs .
 
+- GET /
 - GET /docs → Swagger UI
 - GET /health
 - GET /data-status
@@ -228,3 +229,27 @@ Prometheus charge les métriques de l'endpoint http://localhost:8000/metrics ,
 et est accessible à la page http://localhost:9090/ .
 
 Pour une explication des métriques exposées, ou pour ajouter des métriques, voir l'intro du readme du repo [prometheus-fastapi-instrumentator](https://github.com/trallnag/prometheus-fastapi-instrumentator).
+
+
+## Grafana
+
+Grafana est accessible à la page http://localhost:3000 . Par défaut, le nom d'utilisateur et le mot de passe sont `admin`.
+
+Ensuite, la [page suivante](http://localhost:3000/d/adp6w96/dashboard-1?orgId=1&from=now-30m&to=now&timezone=browser&refresh=10s)
+montre le "dashboard 1".
+
+Ce dashboard peut prendre environ 2 minutes avant de recevoir des données et d'afficher un graphique. Il est censé se rafraîchir automatiquement toutes les 10 secondes. Sinon, Grafana a un bouton "Refresh", à côté duquel est un bouton pour choisir l'intervalle de rafraîchissement.
+
+La [page suivante](http://localhost:3000/a/grafana-metricsdrilldown-app/drilldown?var-ds=PBFA97CFB590B2093&uel_pid=grafana-metricsdrilldown-app&uel_epid=grafana%2Fdatasources%2Fconfig%2Fstatus&from=now-1h&to=now&timezone=browser&var-metrics_filters=&var-filters=&var-labelsWingman=%28none%29&layout=grid&filters-rule=&filters-prefix=&filters-suffix=&search_txt=&var-metrics-reducer-sort-by=default&filters-recent=&var-other_metric_filters=) montre beaucoup d'autres graphiques.
+
+### Créer une visualisation
+
+Ne pas oublier de passer en mode "Code" plutôt que "Builder" quand on tape une query en promQL.
+
+### Partager un dashboard
+
+Pour partager un dashboard via Grafana et git :
+- exporter le dashboard en JSON (bouton "Export" dans Grafana)
+- mettre le JSON dans `grafana/provisioning/dashboards`
+- commit et push le JSON
+- pull request.
