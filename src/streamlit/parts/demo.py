@@ -1,9 +1,14 @@
+import os
 import streamlit as st
 import base64
+import httpx
 from pathlib import Path
 from functools import partial
 
 from src.data_loader import load_training_csv
+
+BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
+API_KEY = os.getenv("API_KEY")
 
 
 @st.cache_data
@@ -59,9 +64,11 @@ def np_array_to_int(np_array):
     return int(np_array[0])
 
 
-def predict_DL3(model, test_ds, preprocessors):
-    y_pred = model.predict(test_ds)
-    y_pred_class = np_array_to_int(preprocessors['target'].inverse_transform(y_pred.argmax(axis=1)))
+def predict(row_df):
+    row_dict = row_df.to_dict('records')[0]
+    response = httpx.post(f"{BASE_URL}/predict", headers={"X-API-Key": API_KEY}, json=row_dict)
+    data = response.json()
+    y_pred_class = data.get("prediction")
     return y_pred_class
 
 
@@ -118,7 +125,8 @@ def show_demo(sample_size = 120,  image_size = 100):
     # Pick a sample from X (because images would use too many resources for the whole X)
     if 'sample' not in st.session_state:
         sample = X.sample(sample_size)
-        st.session_state['sample'] = get_df_with_images(sample)
+        # st.session_state['sample'] = get_df_with_images(sample)
+        st.session_state['sample'] = sample
 
     # Product selection
 
@@ -129,14 +137,14 @@ def show_demo(sample_size = 120,  image_size = 100):
     with cols[1]:
         # Allow refreshing sample
         st.button("Regénérer les produits", on_click=reset_sample)
-    with cols[-1]:
+    # with cols[-1]:
         # Allow resizing dataframe rows
-        image_size = st.slider("Taille des images", 45, 500, 100)
+        # image_size = st.slider("Taille des images", 45, 500, 100)
 
 
     event = st.dataframe(st.session_state['sample'],
-                 column_config={'image': st.column_config.ImageColumn(width= image_size)},
-                 row_height= image_size,
+                #  column_config={'image': st.column_config.ImageColumn(width= image_size)},
+                #  row_height= image_size,
                 #  height=400,  # when specified, hinders full screen mode
                  on_select="rerun",
                  selection_mode="single-row")
@@ -155,7 +163,7 @@ def show_demo(sample_size = 120,  image_size = 100):
         # st.write(row_index,X_row,f"{y_row.iloc[0]=} {type(y_row)=}")
 
         # Prediction
-        y_pred_class = predict_DL3(model, X_row)
+        y_pred_class = predict(X_row)
         y_class = y_row.iloc[0]
         y_pred_description = get_class_description(y_pred_class)
         y_description = get_class_description(y_class)
