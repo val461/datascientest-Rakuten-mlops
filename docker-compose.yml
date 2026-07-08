@@ -44,6 +44,25 @@ services:
       inference-api:
         condition: service_healthy
 
+  streamlit:
+    build:
+      context: .
+      target: streamlit
+    command: streamlit run src/streamlit/app.py --server.port=8501 --server.address=0.0.0.0
+    environment:
+      API_BASE_URL: "http://inference-api:8000"
+      TZ: Europe/Paris
+    env_file:
+      - .env
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - .:/app
+    depends_on:
+      inference-api:
+        condition: service_healthy
+
   mlflow:
     image: ghcr.io/mlflow/mlflow:v3.11.1
     command: mlflow server --backend-store-uri /mlruns --host 0.0.0.0 --port 5000 --allowed-hosts "*"
