@@ -66,6 +66,9 @@ def np_array_to_int(np_array):
 
 def predict(row_df):
     row_dict = row_df.to_dict('records')[0]
+    # missing description is nan (float)
+    if not isinstance(row_dict['description'],str):
+        row_dict['description'] = ''
     response = httpx.post(f"{BASE_URL}/predict", headers={"X-API-Key": API_KEY}, json=row_dict)
     data = response.json()
     y_pred_class = data.get("prediction")
