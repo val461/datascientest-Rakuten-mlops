@@ -36,7 +36,7 @@ st.set_page_config(
 # from parts.preprocessing import show_preprocessing
 # from parts.models import show_models
 # from parts.analyse_meilleur_modele import show_analyse_meilleur_modele
-from parts.conclusion import show_conclusion
+# from parts.conclusion import show_conclusion
 from parts.mon_titre import show_mon_titre
 
 # Handle the possibility that loading demo fails because of missing dependencies (tensorflow, ...)
