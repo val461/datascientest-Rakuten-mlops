@@ -283,3 +283,13 @@ Si vous avez perdu le mot de passe airflow :
 3. Suivre les métriques et artefacts de chaque étape dans MLflow (http://localhost:5001)
 
 Note : l'état paused / unpaused du DAG est sauvegardé lorsqu'on arrête les services avec `docker compose down` et est récupéré lors du prochain lancement des services.
+
+## Streamlit
+
+Il est accessible à la page http://localhost:8501 .
+
+### Ajouter une page au streamlit
+
+Pour ajouter une page, il est possible d'utiliser le script `src/streamlit/generate_page.py` hors de Docker.
+
+Après lancement du script `generate_page`, merci de vérifier les changements générés dans le fichier `app.py` avant de les commit.
