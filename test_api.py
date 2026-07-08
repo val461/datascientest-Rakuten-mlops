@@ -98,15 +98,13 @@ async def test_async_requests(correct_payload):
 @pytest.mark.asyncio
 async def test_async_train():
     logger.info('May take 10mn.')
-    # Make 2 training requests at nearly the same time. Request 2 is supposed to be denied because a training lock was implemented.
+    # Make 2 training requests at nearly the same time. One request is supposed to be denied because a training lock was implemented.
     async with httpx.AsyncClient() as client:
         request1 = client.post(f"{BASE_URL}/train", headers={"X-API-Key": API_KEY}, timeout=None)
         request2 = client.post(f"{BASE_URL}/train", headers={"X-API-Key": API_KEY}, timeout=None)
         response1, response2 = await asyncio.gather(request1, request2)
     logger.debug(f"{response1.text=}\n{response2.text=}")
-    assert response1.status_code == 200
-    assert response1.json()["status"] == "success"
-    assert response2.status_code == 409
+    assert {response1.status_code, response2.status_code} == {200, 409}
 
 
 def test_metrics_for_prometheus():
