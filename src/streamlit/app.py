@@ -36,7 +36,7 @@ st.set_page_config(
 # from parts.preprocessing import show_preprocessing
 # from parts.models import show_models
 # from parts.analyse_meilleur_modele import show_analyse_meilleur_modele
-# from parts.conclusion import show_conclusion
+from parts.conclusion import show_conclusion
 
 # Handle the possibility that loading demo fails because of missing dependencies (tensorflow, ...)
 demo_available = True
@@ -52,9 +52,9 @@ except ImportError as e:
 PAGES = {
     # "🎯 Contexte": show_problematique,
     # "📊 Analyse exploratoire": show_exploration,
-    # "🤖 Modèles & résultats": show_models,
+    # "🤖 Entraînement & résultats": show_models,
     "🚀 Démo interactive": show_demo,
-    # "🎓 Conclusion & perspectives": show_conclusion,
+    "🎓 Conclusion & perspectives": show_conclusion,
 }
 
 st.sidebar.title("Projet Rakuten")
