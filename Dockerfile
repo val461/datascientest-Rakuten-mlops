@@ -21,6 +21,6 @@ RUN pip install --no-cache-dir -r requirements-dev.txt
 
 COPY . .
 
-FROM runtime AS streamlit
+FROM test AS streamlit
 
 RUN pip install --no-cache-dir streamlit
