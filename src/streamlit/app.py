@@ -52,14 +52,10 @@ except ImportError as e:
 
 # Configuration de la navigation : partie → fonction montrant la partie
 PAGES = {
-    # "🎯 Problématique": show_problematique,
+    # "🎯 Contexte": show_problematique,
     # "📊 Analyse exploratoire": show_exploration,
-    # "⚙️ Preprocessing": show_preprocessing,
     # "🤖 Modèles & résultats": show_models,
-    "Machine Learning en français et anglais": show_ML_FR_EN,
-    "Deep multimodal DL4": show_Deep_multimodal,
-    "🚀 Démo interactive DL3": show_demo,
-    # "📈 Analyse du meilleur modèle": show_analyse_meilleur_modele,
+    "🚀 Démo interactive": show_demo,
     # "🎓 Conclusion & perspectives": show_conclusion,
 }
 
