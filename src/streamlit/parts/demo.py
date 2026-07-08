@@ -3,6 +3,8 @@ import base64
 from pathlib import Path
 from functools import partial
 
+from src.data_loader import load_training_csv
+
 
 @st.cache_data
 def get_category_mapping():
@@ -49,8 +51,8 @@ def get_category_mapping():
 
 @st.cache_data
 def load_dataset():
-    X_train, X_test, y_train, y_test = load_reproducible_split(folder = 'Dataset2')
-    return X_train, X_test, y_train, y_test
+    X, y = load_training_csv()
+    return X, y
 
 
 def np_array_to_int(np_array):
@@ -111,11 +113,11 @@ def reset_sample():
 
 def show_demo(sample_size = 120,  image_size = 100):
     st.header("🚀 Démo interactive")
-    X_train, X_test, y_train, y_test = load_dataset()
+    X, y = load_dataset()
 
-    # Pick a sample from X_test (because images would use too many resources for the whole X_test)
+    # Pick a sample from X (because images would use too many resources for the whole X)
     if 'sample' not in st.session_state:
-        sample = X_test.sample(sample_size)
+        sample = X.sample(sample_size)
         st.session_state['sample'] = get_df_with_images(sample)
 
     # Product selection
@@ -144,30 +146,30 @@ def show_demo(sample_size = 120,  image_size = 100):
         # Get index of user-selected row
         input_index = event.selection.rows[0]
 
-        # Get user-selected row at proper index (convert index from `session_state['sample'].iloc` to `X_test.loc`)
+        # Get user-selected row at proper index (convert index from `session_state['sample'].iloc` to `X.loc`)
         row_index = int(st.session_state['sample'].iloc[input_index].name)
-        X_test_row = X_test.loc[[row_index]]  # Double-bracket: to keep it as a dataframe instead of a series
-        y_test_row = y_test.loc[[row_index]]  # Double-bracket: to keep it as a series
+        X_row = X.loc[[row_index]]  # Double-bracket: to keep it as a dataframe instead of a series
+        y_row = y.loc[[row_index]]  # Double-bracket: to keep it as a series
 
         # st.write("Produit sélectionné :", st.session_state['sample'].iloc[input_index])
-        # st.write(row_index,X_test_row,f"{y_test_row.iloc[0]=} {type(y_test_row)=}")
+        # st.write(row_index,X_row,f"{y_row.iloc[0]=} {type(y_row)=}")
 
         # Prediction
-        y_pred_class = predict_DL3(model, X_test_row)
-        y_test_class = y_test_row.iloc[0]
+        y_pred_class = predict_DL3(model, X_row)
+        y_class = y_row.iloc[0]
         y_pred_description = get_class_description(y_pred_class)
-        y_test_description = get_class_description(y_test_class)
+        y_description = get_class_description(y_class)
 
         # Display prediction
         # st.markdown(f"## Prédiction")
-        if y_pred_class == y_test_class:
+        if y_pred_class == y_class:
             prediction_style = "green"
         else:
             prediction_style = "red"
 
         _, col1, col2, _ = st.columns(4)
         with col1:
-            st.markdown(f"### :green[catégorie]\n:green[{y_test_class} - {y_test_description}]")
+            st.markdown(f"### :green[catégorie]\n:green[{y_class} - {y_description}]")
         with col2:
             st.markdown(f"### :{prediction_style}[prédiction]\n:{prediction_style}[{y_pred_class} - {y_pred_description}]")
 
