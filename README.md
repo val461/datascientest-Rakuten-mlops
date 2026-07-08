@@ -290,6 +290,6 @@ Il est accessible à la page http://localhost:8501 .
 
 ### Ajouter une page au streamlit
 
-Pour ajouter une page, il est possible d'utiliser le script `src/streamlit/generate_page.py` hors de Docker.
+Pour ajouter une page dans le dossier `src/streamlit/parts` et mettre à jour `src/streamlit/app.py`, il est possible d'utiliser le script `src/streamlit/generate_page.py` hors de Docker.
 
-Après lancement du script `generate_page`, merci de vérifier les changements générés dans le fichier `app.py` avant de les commit.
+Après lancement du script `generate_page`, merci de vérifier les changements générés dans le fichier `app.py` et dans le dossier `parts/` avant de les commit.
