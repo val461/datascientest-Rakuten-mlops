@@ -133,13 +133,7 @@ def show_demo(sample_size = 120,  image_size = 100):
     # st.markdown(f"## Choix du produit")
     st.markdown(f"Veuillez cocher un produit à catégoriser par le modèle.\nPour consulter les détails des produits, vous pouvez faire défiler le tableau horizontalement/verticalement, ou le mettre en plein écran.")
 
-    cols = st.columns([1,2,1,9])
-    with cols[1]:
-        # Allow refreshing sample
-        st.button("Regénérer les produits", on_click=reset_sample)
-    # with cols[-1]:
-        # Allow resizing dataframe rows
-        # image_size = st.slider("Taille des images", 45, 500, 100)
+    st.button("Regénérer les produits", on_click=reset_sample)
 
 
     event = st.dataframe(st.session_state['sample'],
@@ -159,9 +153,6 @@ def show_demo(sample_size = 120,  image_size = 100):
         X_row = X.loc[[row_index]]  # Double-bracket: to keep it as a dataframe instead of a series
         y_row = y.loc[[row_index]]  # Double-bracket: to keep it as a series
 
-        # st.write("Produit sélectionné :", st.session_state['sample'].iloc[input_index])
-        # st.write(row_index,X_row,f"{y_row.iloc[0]=} {type(y_row)=}")
-
         # Prediction
         y_pred_class = predict(X_row)
         y_class = y_row.iloc[0]
@@ -169,7 +160,6 @@ def show_demo(sample_size = 120,  image_size = 100):
         y_description = get_class_description(y_class)
 
         # Display prediction
-        # st.markdown(f"## Prédiction")
         if y_pred_class == y_class:
             prediction_style = "green"
         else:
