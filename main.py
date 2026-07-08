@@ -176,6 +176,7 @@ def root():
         "prometheus": "http://localhost:9090",
         "grafana": "http://localhost:3000",
         "airflow": "http://localhost:8080",
+        "streamlit": "http://localhost:8501",
     }
 
 
