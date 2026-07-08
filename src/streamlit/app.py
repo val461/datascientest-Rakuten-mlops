@@ -37,6 +37,7 @@ st.set_page_config(
 # from parts.models import show_models
 # from parts.analyse_meilleur_modele import show_analyse_meilleur_modele
 from parts.conclusion import show_conclusion
+from parts.mon_titre import show_mon_titre
 
 # Handle the possibility that loading demo fails because of missing dependencies (tensorflow, ...)
 demo_available = True
@@ -54,7 +55,8 @@ PAGES = {
     # "📊 Analyse exploratoire": show_exploration,
     # "🤖 Entraînement & résultats": show_models,
     "🚀 Démo interactive": show_demo,
-    "🎓 Conclusion & perspectives": show_conclusion,
+    # "🎓 Conclusion & perspectives": show_conclusion,
+    "Mon titre": show_mon_titre,
 }
 
 st.sidebar.title("Projet Rakuten")
