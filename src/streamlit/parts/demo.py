@@ -69,7 +69,7 @@ def predict(row_df):
     # missing description is nan (float)
     if not isinstance(row_dict['description'],str):
         row_dict['description'] = ''
-    response = httpx.post(f"{BASE_URL}/predict", headers={"X-API-Key": API_KEY}, json=row_dict)
+    response = httpx.post(f"{BASE_URL}/predict", headers={"X-API-Key": API_KEY}, json=row_dict, timeout=None)
     data = response.json()
     y_pred_class = data.get("prediction")
     return y_pred_class
