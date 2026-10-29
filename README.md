@@ -204,13 +204,15 @@ datascientest-Rakuten-mlops/
 │   ├── mlflow_tracking.py # configuration et logging MLflow
 │   ├── preprocessor.py    # nettoyage texte, stopwords, lemmatisation, TF-IDF mot+caractère
 │   ├── trainer.py         # entraînement LinearSVC, métriques
-│   └── inference.py       # chargement + prédiction (utilisé par l'API)
+│   ├── inference.py       # chargement + prédiction (utilisé par l'API)
+│   └── streamlit/         # app de présentation : app.py + une page par fichier dans parts/
+├── scripts/               # entraînement en ligne de commande (split, steps de simulation, campagne, train_full)
+│   └── clean.sh           # script pour réinitialiser le repo et mlflow (effacer les artefacts)
 ├── main.py                # FastAPI pour les endpoints /predict, /train et /health
 ├── mlruns/                # store MLflow local (ignoré par git)
 ├── requirements.txt       # dépendances pour container inference-api
 ├── requirements-dev.txt   # dépendances pour test API hors de Docker
 ├── test_api.py            # test API via pytest hors de Docker
-├── clean.sh               # script pour réinitialiser le repo et mlflow (effacer les artefacts)
 ├── .env.example           # template pour le fichier .env
 ├── .env                   # à créer pour définir la clé API
 ├── Dockerfile             # pour container inference-api
@@ -286,10 +288,18 @@ Note : l'état paused / unpaused du DAG est sauvegardé lorsqu'on arrête les se
 
 ## Streamlit
 
-Il est accessible à la page http://localhost:8501 .
+Il est accessible à la page http://localhost:8501 . Il sert de support de présentation du projet MLOps.
 
-### Ajouter une page au streamlit
+Pages, dans l'ordre de présentation :
 
-Pour ajouter une page dans le dossier `src/streamlit/parts` et mettre à jour `src/streamlit/app.py`, il est possible d'utiliser le script `src/streamlit/generate_page.py` hors de Docker.
+- 🏗️ Architecture : vue d'ensemble des services docker compose et de leurs interactions ;
+- 🚀 Démo interactive : choix d'un produit du dataset et prédiction de sa catégorie via `POST /predict` ;
+- 🔌 API FastAPI : présentation et essai des endpoints de l'API ;
+- 📈 Expériences MLflow : runs d'entraînement et courbe de croissance des données (steps 0 à 10) ;
+- ⏱️ Orchestration Airflow : DAG de simulation d'arrivée des données et son état ;
+- 📡 Monitoring : métriques Prometheus et dashboards Grafana intégrés.
 
-Après lancement du script `generate_page`, merci de vérifier les changements générés dans le fichier `app.py` et dans le dossier `parts/` avant de les commit.
+Prérequis pour que toutes les pages affichent des données :
+
+- les pages Démo et API ont besoin d'un modèle entraîné : lancer `POST /train` (voir [(Ré-)entraînement](#ré-entraînement)) ;
+- la courbe de croissance des données de la page MLflow a besoin que la campagne de simulation ait tourné : `POST /train/simulation` (environ 1 h à 1 h 30, voir [Simulation de croissance des donnees](#simulation-de-croissance-des-donnees)).
