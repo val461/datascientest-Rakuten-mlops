@@ -12,7 +12,7 @@ repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
 st.set_page_config(
-    page_title="Projet Rakuten - catégorisation multi-modale",
+    page_title="Projet Rakuten - MLOps",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -31,13 +31,13 @@ st.set_page_config(
 
 # Import de toutes les fonctions show_*
 # Une fonction show_* par fichier de préférence, pour faciliter la collaboration
-# from parts.problematique import show_problematique
-# from parts.exploration import show_exploration
-# from parts.preprocessing import show_preprocessing
-# from parts.models import show_models
-# from parts.analyse_meilleur_modele import show_analyse_meilleur_modele
-# from parts.conclusion import show_conclusion
-from parts.mon_titre import show_mon_titre
+# Les pages data science de l'ancienne présentation restent dans parts/drafts/
+# (importables avec `from parts.drafts.<nom> import show_<nom>`).
+from parts.architecture import show_architecture
+from parts.api import show_api
+from parts.experiments import show_experiments
+from parts.orchestration import show_orchestration
+from parts.monitoring import show_monitoring
 
 # Handle the possibility that loading demo fails because of missing dependencies (tensorflow, ...)
 demo_available = True
@@ -51,12 +51,12 @@ except ImportError as e:
 
 # Configuration de la navigation : partie → fonction montrant la partie
 PAGES = {
-    # "🎯 Contexte": show_problematique,
-    # "📊 Analyse exploratoire": show_exploration,
-    # "🤖 Entraînement & résultats": show_models,
+    "🏗️ Architecture": show_architecture,
     "🚀 Démo interactive": show_demo,
-    # "🎓 Conclusion & perspectives": show_conclusion,
-    "Mon titre": show_mon_titre,
+    "🔌 API FastAPI": show_api,
+    "📈 Expériences MLflow": show_experiments,
+    "⏱️ Orchestration Airflow": show_orchestration,
+    "📡 Monitoring": show_monitoring,
 }
 
 st.sidebar.title("Projet Rakuten")

@@ -68,7 +68,7 @@
                                             "spec": {
                                                 "editorMode": "builder",
                                                 "expr": "http_requests_total",
-                                                "legendFormat": "__auto",
+                                                "legendFormat": "{{handler}} {{method}} {{status}}",
                                                 "range": true
                                             },
                                             "version": "v0"
@@ -188,7 +188,7 @@
                                             "spec": {
                                                 "editorMode": "code",
                                                 "expr": "rate(http_requests_total[5m])",
-                                                "legendFormat": "__auto",
+                                                "legendFormat": "{{handler}} {{method}} {{status}}",
                                                 "range": true
                                             },
                                             "version": "v0"
@@ -308,7 +308,7 @@
                                             "spec": {
                                                 "editorMode": "code",
                                                 "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_highr_seconds_bucket[$__rate_interval])) by (le))",
-                                                "legendFormat": "__auto",
+                                                "legendFormat": "p50",
                                                 "range": true
                                             },
                                             "version": "v0"
@@ -330,7 +330,7 @@
                                                 "editorMode": "code",
                                                 "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_highr_seconds_bucket[$__rate_interval])) by (le))",
                                                 "instant": false,
-                                                "legendFormat": "__auto",
+                                                "legendFormat": "p95",
                                                 "range": true
                                             },
                                             "version": "v0"
@@ -352,7 +352,7 @@
                                                 "editorMode": "code",
                                                 "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_highr_seconds_bucket[$__rate_interval])) by (le))",
                                                 "instant": false,
-                                                "legendFormat": "__auto",
+                                                "legendFormat": "p99",
                                                 "range": true
                                             },
                                             "version": "v0"

@@ -51,6 +51,10 @@ services:
     command: streamlit run src/streamlit/app.py --server.port=8501 --server.address=0.0.0.0
     environment:
       API_BASE_URL: "http://inference-api:8000"
+      MLFLOW_TRACKING_URI: "http://mlflow:5000"
+      PROMETHEUS_URL: "http://prometheus:9090"
+      GRAFANA_URL: "http://grafana:3000"
+      AIRFLOW_URL: "http://airflow:8080"
       TZ: Europe/Paris
     env_file:
       - .env
@@ -59,6 +63,8 @@ services:
     volumes:
       - ./data:/app/data
       - .:/app
+      # lecture seule : la page Orchestration y lit le mot de passe admin généré par `airflow standalone`
+      - airflow_home:/airflow_home:ro
     depends_on:
       inference-api:
         condition: service_healthy
@@ -82,6 +88,12 @@ services:
     image: grafana/grafana-enterprise
     container_name: grafana
     restart: unless-stopped
+    environment:
+      # Accès anonyme en lecture + iframe : la page Monitoring du Streamlit affiche les dashboards
+      # (le compte admin reste utilisable pour modifier les dashboards)
+      GF_SECURITY_ALLOW_EMBEDDING: "true"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
     ports:
       - '3000:3000'
     volumes:
