@@ -10,7 +10,7 @@ services:
     environment:
       SPACY_N_PROCESS: "1"
       TZ: Europe/Paris
-      SMALL_DATASET_FOR_DEBUGGING: "false"
+      SMALL_DATASET_FOR_DEBUGGING: "true"
     env_file:
       - .env
     ports:
@@ -110,7 +110,7 @@ services:
       AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
       AIRFLOW_CONN_TRAINING_API: '{"conn_type": "http", "host": "inference-api", "port": 8000}'
-      AIRFLOW_INTERVAL_MINUTES: "15"  # "1" is ok if you set `SMALL_DATASET_FOR_DEBUGGING="true"` for `inference-api` above
+      AIRFLOW_INTERVAL_MINUTES: "1"  # "1" is ok if you set `SMALL_DATASET_FOR_DEBUGGING="true"` for `inference-api` above
     env_file:
       - .env
     volumes:
